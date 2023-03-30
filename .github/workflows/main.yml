@@ -2,7 +2,7 @@ name: Clock_in
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '30 12 * * *'
 
   workflow_dispatch:
 
@@ -25,5 +25,5 @@ jobs:
       - name: Run the script
         env:
           KEY: ${{ secrets.KEY }}
-          PUSHPLUS: ${{ secrets.PUSHPLUS }}
+          PUSH: ${{ secrets.PUSH }}
         run: python fuck_jdsd.py
