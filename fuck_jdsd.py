@@ -9,8 +9,9 @@ from loguru import logger
 下方填写key 需抓包  key在更换微信登录后会改变 具体有效期尚未可知
 '''
 mykey = str(os.environ['KEY'])
+key2 = str(os.environ['KEY2'])
 pushurl = str(os.environ['PUSH'])
-key_list = [mykey]
+key_list = [mykey, key2]
 session = requests.session()
 headers = {
     'Host': 'jdsd.gzhu.edu.cn',
@@ -213,7 +214,7 @@ if __name__ == '__main__':
             # 先验证登录
             flag, info = get_info()
             if not flag:
-                raise Exception("登录失败 请验证key")
+                raise Exception("登录失败 请验证key" + key)
             print("{}同学您好,您目前的积分为:{}".format(info['name'], info['total']))
             # 签到+2
             signin()
@@ -230,7 +231,7 @@ if __name__ == '__main__':
             print('已完成匹配')
             # 返回
             flag, info = get_info()
-            string = "今日获得:{} 总积分:{}".format(info['today'], info['total'])
+            string = "{} 同学，今日积分+ {} ,总积分:{}".format(info['name'], info['today'], info['total'])
             print(string)
             # 通知 需要填入bark_url
             # bark(1,message = string)
@@ -240,7 +241,7 @@ if __name__ == '__main__':
             data = {
                 "msgtype": "markdown",
                 "markdown": {
-                    "content": txt+string
+                    "content": txt + string
                 }
             }
             r = requests.post(url=pushurl, headers=headers, json=data)
@@ -248,11 +249,12 @@ if __name__ == '__main__':
             print(e)
             # bark(0,message = e)
             headers = {"Content-Type": "text/plain"}
-            txt = '⚠⚠⚠<font color="warning">【经典诵读】</font>发生错误！！！\n[请点击查看GitHub部署情况](%s)\n' % ("https://github.com/myli0724/gzhu-jdsd")  # 需要推送的内容
+            txt = '<font color="warning">【经典诵读】</font>发生错误！！！\n[请点击查看GitHub部署情况](%s)\nkey:' % (
+                "https://github.com/myli0724/gzhu-jdsd")  # 需要推送的内容
             data = {
                 "msgtype": "markdown",
                 "markdown": {
-                    "content": txt
+                    "content": txt + key
                 }
             }
             r = requests.post(url=pushurl, headers=headers, json=data)
